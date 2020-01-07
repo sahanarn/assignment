@@ -1,0 +1,16 @@
+l=[
+   ('project_1', 'developer', 'employee_1'),
+   ('project_1', 'developer', 'employee_4'),
+   ('project_1', 'qa', 'employee_3'),
+   ('project_2', 'developer', 'employee_6'),
+   ('project_2', 'qa', 'employee_2'),
+   ('project_3', 'developer', 'employee_5'),
+   ]
+result = dict()
+for i,j,k in l:
+
+   res=result.setdefault(i, {})
+
+   result[i][j] = result[i][j] if j in result[i] else []
+   result[i].update({j: result[i][j] + [k]})
+print("The merged dictionary is : " + str(dict(result)))
