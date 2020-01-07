@@ -1,0 +1,10 @@
+Input=["Bruce Wayne", "Bruce Banner", "Clark Kent"]
+new_str=[]
+
+for x in Input:
+   new=x.split(' ')
+   for i in range(0,len(new)):
+       if new[i] in new_str:
+           print(new[i])
+       else:
+           new_str.append(new[i])
