@@ -1,0 +1,12 @@
+def Convert(lst):
+   res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst),2)}
+   return res_dct
+lst = ['name', 'Bruce Wayne', 'age', 2, 'weight', 30]
+lst1 =['name', 'Bruce Banner', 'age', 12, 'weight', 310]
+name=input("enter the name")
+if (name==lst[1]):
+   print(Convert(lst))
+elif(name==lst1[1]):
+   print(Convert(lst1))
+else:
+   print("enter the valid name")
