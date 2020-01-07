@@ -1,0 +1,20 @@
+string = input("enter names:")
+
+splitstr=string.split(',')
+for k in range(0,len(splitstr)):
+   substring=splitstr[k]
+
+   for s in range(0,len(substring)):
+       if (substring[s]==' ' and  substring[s+1]=='A'):
+           print("Duplicate characters in a given string: ")
+                   for i in range(0, len(substring)):
+               count = 1
+
+               for j in range(i + 1, len(substring)):
+                   if (substring[i] == substring[j] and substring[i] != ' ' and substring [i]!='\n'):
+                       count = count + 1
+                                             substring = substring[:j] + '0' + substring[j + 1:]
+
+                                  if (count > 1 and substring[i] != '0'):
+                       print(substring[i])
+
