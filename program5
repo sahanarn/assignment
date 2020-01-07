@@ -1,0 +1,255 @@
+import os
+import random
+class blackjackgame:
+   def start(self,playername,players,decks):
+
+       self.players=players
+       self.decks=decks
+       self.playername = playername
+       deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * (int(self.decks) * 4)
+       self.deck = deck
+       for p in range(1,int(self.players)+1):
+           name = input("enter player" +" " +str(p) +" "+ "name:")
+           self.playername.append(name)
+       blackjackobj.game([],[],0,0,self.deck,0,self.players,self.playername)
+
+   def deal(self,deck):
+       hand = []
+       self.deck=deck
+       for i in range(2):
+           random.shuffle((self.deck))
+           card =self.deck.pop()
+           if card == 11:card = "J"
+           if card == 12:card = "Q"
+           if card == 13:card = "K"
+           if card == 14:card = "A"
+           hand.append(card)
+       return hand
+
+   def newstart(self,player_hand,dealer_hand,losses,win,status,d,players,playername):
+
+           self.player_hand=player_hand
+           self.dealer_hand=dealer_hand
+           self.players=players
+           self.playername=playername
+           self.status=status
+
+
+           if ((self.status=='Blackjack' or self.status=='lose' or self.status=='win' ) and self.playername!=[]):
+
+               self.losses=losses
+               self.win=win
+               count = len(self.playername)
+
+
+               if (count >= 1):
+                   remove_player = self.playername[d]
+                   self.playername.remove(remove_player)
+                   count -= 1
+                   if(playername==[]):
+                       dealer_hand = []
+                       player_hand = []
+                       again = input("Do you want to play New Game? (Y/N) : ").lower()
+                       if again == 'y':
+                           blackjackobj.start([], players, decks)
+                       else:
+                           exit()
+                   else:
+                        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] * 4
+                        blackjackobj.decision(self.player_hand, self.dealer_hand, self.losses, self.win, self.deck, self.d,status,count,self.playername)
+           else:
+               exit()
+
+
+   def score(self,playername,player_hand,dealer_hand,d,status,looses,win):
+       self.player_hand = player_hand
+       self.dealer_hand = dealer_hand
+       self.d=d
+       self.playername=playername
+       self.status=status
+       self.losses=looses
+       self.win=win
+
+       if self.total(self.player_hand) == 21:
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Congratulations!" + " "+str(self.playername[d])+" " + "You got a Blackjack!\n")
+           self.status='Blackjack'
+           self.wins += 1
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players, self.playername)
+
+       elif self.total(self.dealer_hand) == 21:
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Sorry," +" " +str(self.playername[d]) +" " + "you lose. The dealer got a blackjack.\n")
+           self.losses += 1
+           self.status='lose'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+       elif self.total(self.player_hand) > 21:
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Sorry." + " " + str(self.playername[d]) + " " + " You busted. You lose.\n")
+           self.losses += 1
+           self.status='lose'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+       elif self.total(self.dealer_hand) > 21:
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Dealer busts. "+ " " + str(self.playername[d]) +  " " +" win!\n")
+           self.wins += 1
+           self.status='win'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+       elif self.total(self.player_hand) < self.total(self.dealer_hand):
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Sorry." +  " " +str(
+          self.playername[d]) +  " " +"your score isn't higher than the dealer. You lose.\n")
+           self.losses += 1
+           self.status='lose'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+       elif self.total(self.player_hand) > self.total(self.dealer_hand):
+           self.print_results(self.dealer_hand, self.player_hand,self.d)
+           print("Congratulations." +  " " +str(
+               self.playername[d]) + " " + "Your score is higher than the dealer. You win\n")
+           self.wins += 1
+           self.status='win'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+
+   def total(self,hand):
+       total = 0
+       for card in hand:
+           if card == "J" or card == "Q" or card == "K":
+               total=total+ 10
+           elif card == "A":
+               if total >= 11: total+= 1
+               else: total+= 11
+           else:
+               total += card
+       return total
+
+   def hit(self,hand):
+       card = self.deck.pop()
+       if card == 11:card = "J"
+       if card == 12:card = "Q"
+       if card == 13:card = "K"
+       if card == 14:card = "A"
+       hand.append(card)
+       return hand
+
+   def print_results(self,dealer_hand, player_hand,d):
+       self.d=d
+       print("\n    WELCOME TO BLACKJACK!  \n")
+       print ("The dealer has a " + " " + str(dealer_hand) + " " + " for a total of " + str(self.total(dealer_hand)))
+       print (self.playername[self.d]+ " " +"has a " + " " + str(player_hand) +  " " +" for a total of " + str(self.total(player_hand)))
+
+   def blackjack(self,dealer_hand, player_hand,d,losses,wins,playername):
+       self.losses=losses
+       self.wins=wins
+       self.d=d
+       self.playername=playername
+       self.dealer_hand=dealer_hand
+ if self.total(player_hand) == 21:
+           self.print_results(dealer_hand, player_hand,self.d)
+           print ("Congratulations!"+ " " + str(self.playername[self.d]) + " " +"got a Blackjack!\n")
+
+           self.wins += 1
+           status='win'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+       elif self.total(dealer_hand) == 21:
+           self.print_results(dealer_hand, player_hand,self.d)
+           print ("Sorry, " +" " +"you lose. The dealer got a blackjack.\n")
+           self.losses += 1
+           status='lose'
+           blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win, self.status, self.d, players,
+                             self.playername)
+
+   def game(self,player_hand,dealer_hand,losses,win,deck,d,players,playername):
+       self.player_hand=player_hand
+       self.dealer_hand = dealer_hand
+       self.losses=losses
+       self.win=win
+       self.deck=deck
+       self.d = d
+       status= None
+       print("\n WELCOME TO BLACKJACK!\ n")
+       self.dealer_hand = self.deal(self.deck)
+       for d in range(0, int(self.players)):
+               blackjackobj.decision(self.player_hand,self.dealer_hand,self.losses,self.win,self.deck,self.d,status,players,playername)
+
+   def decision(self,player_hand,dealer_hand,losses,win,deck,d,status,players,playername):
+       self.player_hand = player_hand
+       self.dealer_hand = dealer_hand
+       self.losses = losses
+       self.wins = win
+       self.deck = deck
+       self.d = d
+       self.players=players
+       self.playername=playername
+       self.status=status
+       quit = False
+       while not quit:
+                   for self.d in range(int(self.players)):
+                       self.player_hand = self.deal(self.deck)
+                       print("The dealer is showing a " +  " " +str(self.dealer_hand[0]))
+                       print(str(self.playername[self.d]) + " have " + str(self.player_hand) + " for a total of " + str(blackjackobj.total(self.player_hand)))
+                       self.blackjack(self.dealer_hand, self.player_hand, self.d, self.losses, self.win, self.playername)
+                       Again=input("Do you want to play again?").lower()
+                       if Again=="y":
+                           choice = input(str(self.playername[self.d])+ "Do you want to [H]it, [S]tand, or [Q]uit: ")
+                           if choice == 'h':
+                               self.hit(self.player_hand)
+                               print("Hand total" + "of " + " " + str(self.playername[self.d]) + " " + str(self.total(self.player_hand)))
+                               if self.total(self.player_hand) >21:
+                                   print(str(self.playername[self.d]) +  'busted')
+                                   self.losses += 1
+                                   self.status='lose'
+                                   blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win,
+                                                     self.status, self.d, players, self.playername)
+                               else:
+                                   blackjackobj.score(self.playername, self.player_hand, self.dealer_hand, self.d,self.status,self.losses,self.win)
+                                   continue
+                           elif choice == 's':
+                                while self.total(self.dealer_hand) < 17:
+                                   self.hit(self.dealer_hand)
+                                   if self.total(self.dealer_hand) > 21:
+                                       print('Dealer busts,' + " " + str(self.playername[self.d]) +  " " +'you win!')
+                                       self.wins += 1
+                                       self.status='win'
+                                       self.win+=1
+                                       blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win,
+                                                         self.status, self.d, players, self.playername)
+                                blackjackobj.score(self.playername,self.player_hand,self.dealer_hand,self.d,self.status,self.losses,self.win)
+                                continue
+                           else:
+                               print("Bye!"+ self.playername[self.d])
+                               self.status = 'lose'
+                               self.losses+=1
+                               blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win,
+                                                  self.status, self.d, self.players, self.playername)
+                               quit = True
+                       elif(Again=='n'):
+                           D=input("Do you want to quit?").lower()
+                           if(D=='y'):
+                               self.status = 'lose'
+                               self.losses+=1
+                               blackjackobj.newstart(self.player_hand, self.dealer_hand, self.losses, self.win,
+                                                 self.status, self.d, self.players, self.playername)
+                           else:
+                               continue
+                       else:
+                           print("invalid input")
+
+if __name__ == "__main__":
+   players = input("Enter the number of players: ")
+   decks = input("Enter number of decks to use: ")
+
+   blackjackobj=blackjackgame()
+   blackjackobj.start([],players,decks)
+
